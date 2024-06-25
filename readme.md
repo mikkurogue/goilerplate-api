@@ -21,7 +21,7 @@ In terms of cli styling for the binary, I would be open to using things like cha
   - With example /login post route*
 - Example protected routes for auth*
 
-* TODO still not yet added but I don't imagine this taking all that long.
+`*TODO still not yet added but I don't imagine this taking all that long.`
 
 ## How to run?
 
