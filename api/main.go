@@ -27,6 +27,9 @@ func Routes(e *echo.Echo) {
 	e.GET("/hello-world", handlers.HelloWorld)
 	e.GET("/hello-world-json", handlers.HelloWorldJson)
 
+	e.POST("/hello-world", handlers.PostHelloWorld)
+	e.POST("/hello-world-multipart", handlers.PostHelloWorldMultipart)
+
 	e.POST("/login", handlers.Login)
 
 	protected := e.Group("/protected")
