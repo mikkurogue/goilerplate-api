@@ -27,3 +27,5 @@ Clone the repository and simply navigate to it with your terminal and fire the c
 To build the binaries run `go build .`
 
 Then make a call to `localhost:1337/hello-world` to get an initial GET response!
+
+To test the POST requests, I recommend using a client like Postman or Insomnia.
