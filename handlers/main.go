@@ -17,3 +17,7 @@ func HelloWorldJson(c echo.Context) error {
 		"date":    time.Now(),
 	})
 }
+
+func HelloProtectedWorld(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello protected world!")
+}
