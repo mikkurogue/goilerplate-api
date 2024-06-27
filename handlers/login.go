@@ -40,13 +40,13 @@ func Login(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Make sure to set this "secret" to an .env variable in your builds
-	signed_token, err := token.SignedString([]byte("secret"))
+	signedToken, err := token.SignedString([]byte("secret"))
 
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"access_token": signed_token,
+		"access_token": signedToken,
 	})
 }
