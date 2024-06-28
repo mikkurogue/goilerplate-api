@@ -1,25 +1,51 @@
 package api
 
 import (
+	"context"
 	"goilerplate-api/handlers"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 )
 
 func Start() {
 	e := echo.New()
+	e.Logger.SetLevel(log.INFO)
 
 	e.Use(middleware.Logger())
 
 	// Default cors cfg
 	e.Use(middleware.CORS())
 
+	// Recover from panics if applicable
+	e.Use(middleware.Recover())
+
 	Routes(e)
 
-	e.Logger.Fatal(e.Start(":1337"))
+	// Try to gracefully shutdown
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+	// Start server
+	go func() {
+		if err := e.Start(":1337"); err != nil && err != http.ErrServerClosed {
+			e.Logger.Fatal("shutting down the server")
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with a timeout of 10 seconds.
+	<-ctx.Done()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		e.Logger.Fatal(err)
+	}
 }
 
 func Routes(e *echo.Echo) {
