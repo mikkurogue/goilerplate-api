@@ -50,3 +50,7 @@ func (database DbConfig) CreateConnection() *sql.DB {
 	// defer db.Close()
 	return db
 }
+
+func (database DbConfig) CloseConnection(db *sql.DB) {
+	defer db.Close()
+}
