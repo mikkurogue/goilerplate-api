@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"goilerplate-api/db"
 
@@ -28,7 +29,12 @@ func Register(c echo.Context) error {
 	database := dbConfig.CreateConnection()
 
 	// todo check if this is the actual way to fire insert into database...
-	result, err := database.Exec(`INSERT INTO users VALUES (%s, %s)`, username, hashed)
+	result, err := database.Exec(`INSERT INTO users VALUES (%s, %s, %v, %v)`,
+		username,
+		hashed,
+		time.Now(),
+		time.Now())
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "something went wrong",

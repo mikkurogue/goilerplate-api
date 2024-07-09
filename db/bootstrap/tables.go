@@ -26,7 +26,7 @@ func Bootstrap() {
 
 	database := dbConfig.CreateConnection()
 
-	database.Query(CREATE_USER_TABLE)
+	database.Exec(CREATE_USER_TABLE)
 
 	// close the db connection
 	defer database.Close()
