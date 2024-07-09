@@ -31,6 +31,9 @@ func Init(databaseName, authToken string) (DbConfig, error) {
 func (database DbConfig) CreateConnection() *sql.DB {
 	color.Yellow("starting connection...")
 
+	// Change this URL to be your database provider.
+	// this example uses Turso, because its a quick setup
+	// but this should work with most sql database providers
 	url := fmt.Sprintf("libsql://%s.turso.io=authToken=%s",
 		database.DatabaseName,
 		database.AuthToken)
