@@ -18,13 +18,15 @@ func Login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	// throw unauth error for now just hard coded
-	if username == "typescript" || password == "isbad" {
-		return echo.ErrUnauthorized
+	// first check if nothing is empty
+	if username == "" || password == "" {
+		return echo.ErrBadRequest
 	}
 
-	if username == "" || password == "" {
-		fmt.Println("username or password is empty")
+	hashed, _ := HashPassword(password)
+
+	if CheckPasswordHash(password, hashed) == false {
+		// todo probably expand this, but not sure when or how or with what
 		return echo.ErrBadRequest
 	}
 

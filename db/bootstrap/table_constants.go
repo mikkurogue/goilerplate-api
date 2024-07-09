@@ -4,6 +4,9 @@ const (
 	CREATE_USER_TABLE = `
     CREATE TABLE users (
       ID INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT
+      username TEXT,
+      password TEXT,
+      createdOn DATETIME,
+      lastLogin DATETIME
   );`
 )
