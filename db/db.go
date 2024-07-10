@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type DbConfig struct {
@@ -14,15 +15,16 @@ type DbConfig struct {
 	AuthToken    string
 }
 
-func Init(databaseName, authToken string) (DbConfig, error) {
+func Init(databaseName, authToken string) (*DbConfig, error) {
 	color.Yellow("initialising database connection configuration...")
 
 	if len(databaseName) == 0 || len(authToken) == 0 {
-		return DbConfig{}, errors.New("no database name or auth token provided")
+		return &DbConfig{}, errors.New("no database name or auth token provided")
 	}
 
 	color.Green("successfully configured the connection!")
-	return DbConfig{
+
+	return &DbConfig{
 		DatabaseName: databaseName,
 		AuthToken:    authToken,
 	}, nil
@@ -34,7 +36,7 @@ func (database DbConfig) CreateConnection() *sql.DB {
 	// Change this URL to be your database provider.
 	// this example uses Turso, because its a quick setup
 	// but this should work with most sql database providers
-	url := fmt.Sprintf("libsql://%s.turso.io=authToken=%s",
+	url := fmt.Sprintf("libsql://%s.turso.io?authToken=%s",
 		database.DatabaseName,
 		database.AuthToken)
 

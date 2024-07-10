@@ -56,6 +56,7 @@ func Routes(e *echo.Echo) {
 	e.POST("/hello-world", handlers.PostHelloWorld)
 	e.POST("/hello-world-multipart", handlers.PostHelloWorldMultipart)
 
+	e.POST("/register", handlers.Register)
 	e.POST("/login", handlers.Login)
 
 	protected := e.Group("/protected")

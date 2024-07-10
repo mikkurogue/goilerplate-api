@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -8,34 +9,46 @@ import (
 	"goilerplate-api/db"
 
 	"github.com/fatih/color"
+	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(c echo.Context) error {
+
+	err := godotenv.Load()
+
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
+	if len(username) == 0 || len(password) == 0 {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "username or password empty",
+		})
+	}
+
 	hashed, _ := HashPassword(password)
 
-	dbName := os.Getenv("DATABASE_NAME")
+	databaseName := os.Getenv("DATABASE_NAME")
 	authToken := os.Getenv("AUTH_TOKEN")
 
-	dbConfig, err := db.Init(dbName, authToken)
+	dbConfig, err := db.Init(databaseName, authToken)
 	if err != nil {
+		log.Fatal(err)
 		color.Red("cannot initialise database config")
 	}
 
 	database := dbConfig.CreateConnection()
 
-	// todo check if this is the actual way to fire insert into database...
-	result, err := database.Exec(`INSERT INTO users VALUES (%s, %s, %v, %v)`,
+	result, err := database.Exec("INSERT INTO users VALUES (?, ?, ?, ?, ?)",
+		uuid.New().String(),
 		username,
 		hashed,
-		time.Now(),
-		time.Now())
-
+		time.Now().Format(time.DateTime),
+		time.Now().Format(time.DateTime))
 	if err != nil {
+		log.Fatalln(err)
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "something went wrong",
 		})
