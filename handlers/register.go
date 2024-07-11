@@ -7,18 +7,14 @@ import (
 	"time"
 
 	"goilerplate-api/db"
+	"goilerplate-api/util"
 
 	"github.com/fatih/color"
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(c echo.Context) error {
-
-	err := godotenv.Load()
-
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
@@ -28,7 +24,7 @@ func Register(c echo.Context) error {
 		})
 	}
 
-	hashed, _ := HashPassword(password)
+	hashed, _ := util.HashPassword(password)
 
 	databaseName := os.Getenv("DATABASE_NAME")
 	authToken := os.Getenv("AUTH_TOKEN")
@@ -65,14 +61,4 @@ func Register(c echo.Context) error {
 		"message":   "account registered",
 		"insert_id": id,
 	})
-}
-
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,6 +19,11 @@ import (
 func Start() {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("no .env file exists...")
+	}
 
 	e.Use(middleware.Logger())
 
@@ -65,7 +71,7 @@ func Routes(e *echo.Echo) {
 			return new(handlers.JWTClaims)
 		},
 		// Make sure this is the same env var
-		SigningKey: []byte("secret"),
+		SigningKey: []byte(os.Getenv("JWT_SECRET")),
 	}
 
 	protected.Use(echojwt.WithConfig(config))

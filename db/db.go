@@ -56,3 +56,13 @@ func (database DbConfig) CreateConnection() *sql.DB {
 func (database DbConfig) CloseConnection(db *sql.DB) {
 	defer db.Close()
 }
+
+// for now, we need to design an abort method.
+// probably unusable but maybe useful in the future...
+func (database DbConfig) Abort(db *sql.DB) {
+	if db.Stats().OpenConnections > 100 {
+
+		db.Close()
+	}
+
+}

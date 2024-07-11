@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"goilerplate-api/util"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -19,14 +22,17 @@ func Login(c echo.Context) error {
 
 	// first check if nothing is empty
 	if username == "" || password == "" {
-		return echo.ErrBadRequest
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"error": "username or password can not be empty",
+		})
 	}
 
-	hashed, _ := HashPassword(password)
+	hashed, _ := util.HashPassword(password)
 
-	if CheckPasswordHash(password, hashed) == false {
-		// todo probably expand this, but not sure when or how or with what
-		return echo.ErrBadRequest
+	if util.CheckPasswordHash(password, hashed) == false {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"error": "username or password is incorrect",
+		})
 	}
 
 	// set custom claims
@@ -41,10 +47,13 @@ func Login(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Make sure to set this "secret" to an .env variable in your builds
-	signedToken, err := token.SignedString([]byte("secret"))
+	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	if err != nil {
-		return err
+		color.Red("Could not sign JWT token")
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"error": "internal server error",
+		})
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
