@@ -20,6 +20,14 @@ In terms of cli styling for the binary, I would be open to using things like cha
 - Basic JWT token generation
   - With example /login post route
 - Example protected routes for auth
+- Mongodb driver
+- Support for turso
+
+
+### Database caveats
+I do highly recommend uncommenting/removing the database files you do not need for your use case. For instance, if you are not planning on using Turso, then make sure to remove the Turso boilerplate. The same goes for mongo db.
+
+The reason I have them both in the main branch is because I want to keep everyones options open and allow people to work with whatever they want. The point of this boilerplate is to make it as robust, lightweight and adaptable as possible.
 
 ## How to run?
 
