@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/fatih/color"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,12 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// todo replace this with local string - or from env
-const uri = "mongodb://localhost:27017"
-
 func InitMongo() {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI(os.Getenv("DB_URI")).SetServerAPIOptions(serverAPI)
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
