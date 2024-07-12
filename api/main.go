@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"goilerplate-api/db"
 	"goilerplate-api/handlers"
 	"net/http"
 	"os"
@@ -18,6 +19,8 @@ import (
 func Start() {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
+
+	db.InitMongo()
 
 	e.Use(middleware.Logger())
 
