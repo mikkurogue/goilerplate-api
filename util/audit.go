@@ -7,14 +7,57 @@
 
 package util
 
+import (
+	"errors"
+	"fmt"
+	"goilerplate-api/db"
+	"os"
+
+	"github.com/google/uuid"
+)
+
 type Audit struct {
 	Id     string `json: id`
 	Action string `json: action`
+	Table  string `json: table`
 }
 
-func (a *Audit) LogAction() (*Audit, error) {
-	a.Id = "some id"
-	a.Action = "some action"
+func (a *Audit) CreateAction(table, action string) (*Audit, error) {
+	id, err := uuid.NewV7()
+	if err != nil {
+		return &Audit{}, errors.New("some unknown error occured...")
+	}
+
+	a.Id = id.String()
+	a.Action = action
+	a.Table = table
 
 	return a, nil
+}
+
+func (a *Audit) ReadAction(id, table string) (*Audit, error) {
+	// some db logic to fetch the id and assign it here. also error check it
+	// TODO: NYI
+	const action = "Some action name"
+
+	return &Audit{
+		Id:     id,
+		Action: action,
+		Table:  table,
+	}, nil
+}
+
+func (a *Audit) DeleteAction() {
+	dbName := os.Getenv("DATABASE_NAME")
+	authToken := os.Getenv("AUTH_TOKEN")
+
+	// delete from database, check if error then return error.
+	db, err := db.Init(dbName, authToken)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	db.CreateConnection()
+
+	// TODO: create the rest of the stuff here
 }
